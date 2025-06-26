@@ -1,0 +1,51 @@
+import { useState } from "react";
+
+export default function QuantumROICalculator() {
+  const [numUses, setNumUses] = useState(1000);
+  const [costPerSolve, setCostPerSolve] = useState(0.025);
+  const [baselineScore, setBaselineScore] = useState(0.74);
+  const [quantumScore, setQuantumScore] = useState(0.81);
+  const [inferenceCost, setInferenceCost] = useState(0.15);
+  const [outputValue, setOutputValue] = useState(15);
+
+  const boost = ((quantumScore - baselineScore) / baselineScore) * 100;
+  const totalQuantumCost = costPerSolve * numUses;
+  const marginalGain = ((quantumScore - baselineScore) * outputValue * numUses) / baselineScore;
+  const roi = marginalGain / totalQuantumCost;
+  const breakEvenBoost = (totalQuantumCost / (outputValue * numUses)) * 100;
+
+  return (
+    <div className="p-4 max-w-xl mx-auto space-y-4">
+      <h1 className="text-xl font-bold">Quantum Context ROI Calculator</h1>
+
+      <div className="grid grid-cols-2 gap-4">
+        <label>Uses per Month
+          <input type="number" value={numUses} onChange={e => setNumUses(+e.target.value)} className="w-full" />
+        </label>
+        <label>Cost per Solve ($)
+          <input type="number" step="0.001" value={costPerSolve} onChange={e => setCostPerSolve(+e.target.value)} className="w-full" />
+        </label>
+        <label>Baseline Score
+          <input type="number" step="0.01" value={baselineScore} onChange={e => setBaselineScore(+e.target.value)} className="w-full" />
+        </label>
+        <label>Quantum Score
+          <input type="number" step="0.01" value={quantumScore} onChange={e => setQuantumScore(+e.target.value)} className="w-full" />
+        </label>
+        <label>LLM Inference Cost ($)
+          <input type="number" step="0.01" value={inferenceCost} onChange={e => setInferenceCost(+e.target.value)} className="w-full" />
+        </label>
+        <label>Output Value ($)
+          <input type="number" step="0.1" value={outputValue} onChange={e => setOutputValue(+e.target.value)} className="w-full" />
+        </label>
+      </div>
+
+      <div className="bg-gray-100 p-4 rounded shadow space-y-2">
+        <p><strong>Quantum Boost:</strong> {boost.toFixed(2)}%</p>
+        <p><strong>Total Quantum Cost:</strong> ${totalQuantumCost.toFixed(2)}</p>
+        <p><strong>Marginal Gain from Boost:</strong> ${marginalGain.toFixed(2)}</p>
+        <p><strong>ROI Multiplier:</strong> {roi.toFixed(2)}×</p>
+        <p><strong>Break-even Boost Required:</strong> {breakEvenBoost.toFixed(2)}%</p>
+      </div>
+    </div>
+  );
+}
